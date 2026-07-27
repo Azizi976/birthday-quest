@@ -1,15 +1,41 @@
 import type { Mission } from "@/lib/types";
 
 /**
- * All 15 missions, fully specified.
- * Each mission is self-contained content — change text/choices freely here.
+ * ═══════════════════════ GAME CONFIG ═══════════════════════
+ * The single source of truth for ALL mission content.
+ * Edit Hebrew text/choices/answers freely here — components never
+ * hardcode content. Placeholders look like: [הכנס_טקסט_כאן].
+ *
+ * `order` is assigned automatically from array position, so you can
+ * insert/remove/reorder missions without renumbering anything.
+ * The array order must match the world traversal order (w1 → w5).
  */
-export const MISSIONS: Mission[] = [
+
+type RawMission = Mission extends infer M ? (M extends Mission ? Omit<M, "order"> : never) : never;
+
+const RAW: RawMission[] = [
   // ─────────────────────────── WORLD 1 ───────────────────────────
+  {
+    id: "m0",
+    worldId: "w1",
+    title: "בחירת דמות סוכנת",
+    codename: "Agent Avatar",
+    kind: "avatar",
+    xp: 100,
+    prompt: "כל סוכנת צריכה תמונת פרופיל.\nבחרי את הדמות שלך.",
+    avatars: [
+      { id: "a1", src: "/avatars/99EDA6A7-DAEC-4DB6-B453-99F5F1EF2B7C.jpg", label: "[100ממת שילי]" },
+      { id: "a2", src: "/avatars/IMG-20250824-WA0022.jpg", label: "[נדירה שילי]" },
+      { id: "a3", src: "/avatars/IMG_7408.jpg", label: "[קטלנית שילי]" },
+      { id: "a4", src: "/avatars/IMG_7442.jpg", label: "[אהובה שילי]" },
+      { id: "a5", src: "/avatars/PXL_20250623_153748542.jpg", label: "[נדירה שילי]" },
+      { id: "a6", src: "/avatars/PXL_20250908_074249597.jpg", label: "[פצצה שילי]" },
+    ],
+    successText: "פרופיל הסוכנת עודכן. עכשיו את רשמית.",
+  },
   {
     id: "m1",
     worldId: "w1",
-    order: 1,
     title: "כניסה למערכת",
     codename: "System Login",
     kind: "codeword",
@@ -17,13 +43,12 @@ export const MISSIONS: Mission[] = [
     prompt: "ברוכה הבאה סוכנת.\nאנא הזיני את שם הקוד שלך.",
     answers: ["צ'אפו ליובין", "צאפו ליובין", "chapu", "צ'אפו", "צאפו"],
     placeholder: "שם קוד...",
-    successText: "זיהוי אומת. ברוכה הבאה, צ'אפו. 💗",
+    successText: "זיהוי אומת. ברוכה הבאה, צ'אפו ליובין. 💗",
     hint: "מתחיל ב-צ' נו את יודעת.",
   },
   {
     id: "m2",
     worldId: "w1",
-    order: 2,
     title: "זיהוי היוזם",
     codename: "Identify The Initiator",
     kind: "choice",
@@ -32,8 +57,8 @@ export const MISSIONS: Mission[] = [
     subtitle: "לא שאלה קשה אבל תתרכזי רגע",
     choices: [
       { id: "a", label: "צ'אפו", emoji: "🙋‍♀️" },
-      { id: "b", label: "באבו", emoji: "💁‍♀️" },
-      { id: "c", label: "דוד הירקן", emoji: "😏", correct: true, feedback: "אכן. הגבר עם האומץ." },
+      { id: "b", label: "דוד הירקן", emoji: "💁‍♀️" },
+      { id: "c", label: "באבו", emoji: "😏", correct: true, feedback: "אכן. הגבר עם האומץ." },
       { id: "d", label: "אבטמו מהקומה למטה", emoji: "🧍" },
     ],
     successText: "נכון. הרגשתי בלב שילי שאת האחת (וכשהבנתי לא יכולתי לחזור אחורה).",
@@ -41,7 +66,6 @@ export const MISSIONS: Mission[] = [
   {
     id: "m3",
     worldId: "w1",
-    order: 3,
     title: "חקירת ההיכרות",
     codename: "Connection Investigation",
     kind: "choice",
@@ -65,7 +89,6 @@ export const MISSIONS: Mission[] = [
   {
     id: "m4",
     worldId: "w2",
-    order: 4,
     title: "שחזור הדייט הראשון",
     codename: "Recover First Date",
     kind: "map",
@@ -84,7 +107,6 @@ export const MISSIONS: Mission[] = [
   {
     id: "m5",
     worldId: "w2",
-    order: 5,
     title: "תקרית המשאית",
     codename: "The Truck Incident",
     kind: "choice",
@@ -97,12 +119,11 @@ export const MISSIONS: Mission[] = [
       { id: "c", label: "רביד והמלצר", emoji: "🤵" },
       { id: "d", label: "ההורים של בטי הכלבה", emoji: "🕵️", feedback: "חייבים להזמין אותם לדאבל דייט" },
     ],
-    successText: "גור ורביד. שני עדי ראייה אמינים בערך כמו זיכרון של מי קנה אחרון.",
+    successText: "גור ורביד. אשכרה כמעט דרסה אותנו משאית בעיר התיקה ועדיין הזמנו להם צייסרים, איזה זוג.",
   },
   {
     id: "m6",
     worldId: "w2",
-    order: 6,
     title: "הדייט הבלתי נשכח",
     codename: "Unforgettable Date",
     kind: "choice",
@@ -121,22 +142,38 @@ export const MISSIONS: Mission[] = [
     ],
     successText: "ארוחת הערב בדירה שלי ושל מאי . קלאסיקה. ותראי איפה אנחנו היום !",
   },
+  {
+    id: "m-order",
+    worldId: "w2",
+    title: "סדר את ציר הזמן",
+    codename: "Timeline Sort",
+    kind: "order",
+    xp: 100,
+    question: "לחצי על האירועים לפי הסדר הנכון —\nמההתחלה ועד היום.",
+    // Items here are in the CORRECT chronological order; the game shuffles them.
+    items: [
+      { id: "e1", label: "[אהבת חיי ממלצרת בפראנג'ליקו ומגישה ללקוחות את מנת הדגל : ספיישל פראנג'ליקו]", emoji: "💬" },
+      { id: "e2", label: "[אהבת חיי פראמדיקית בצבא הגנה לישראל]", emoji: "🍷" },
+      { id: "e3", label: "[אהבת חיי מגיעה לעיר באר שבע ועוברת לגור עם ואדי תמיר - מי קורא לילדה שלו ואדי]", emoji: "✈️" },
+      { id: "e4", label: "[אני ואהבת חיי מכירים, עוברים לגור יחדיו, ונשבעים את אהבתנו זה לזו]", emoji: "🏠" },
+    ],
+    successText: "[לא מאמין שהיום אנחנו ביוון וחוזרים לבית שלנו, אני כלכך אוהב אותך]",
+  },
 
   // ─────────────────────────── WORLD 3 ───────────────────────────
   {
     id: "m7",
     worldId: "w3",
-    order: 7,
-    title: "משפט גניבת השמיכה",
+    title: "משפט פשע הוולט",
     codename: "Blanket Theft Trial",
     kind: "courtroom",
     xp: 100,
-    achievementId: "blanket-criminal",
+    achievementId: "'wolt criminal'",
     prosecutor: "באבו עזיזי",
     defendant: "צ'אפו ליובין",
-    charge: "גניבת שמיכה מדרגה ראשונה",
+    charge: "הזמנת אוכל חוזרת ונשנית משלל מקומות קולינריים בבאר שבע סיטי ללא הבן זוג שלך",
     intro:
-      "הכבוד נכבד. התביעה מציגה ראיה מוצקה: כל בוקר, השמיכה כולה — בצד אחד של המיטה.",
+      "הכבוד נכבד. התביעה מציגה ראיה מוצקה: כל פעם שאני עוזב את באר שבע, היא מזמינה מהוולט, אני מצרף חשבוניות.",
     choices: [
       { id: "g", label: "אשמה", emoji: "😇", correct: true },
       {
@@ -153,7 +190,6 @@ export const MISSIONS: Mission[] = [
   {
     id: "m8",
     worldId: "w3",
-    order: 8,
     title: "כיבוש שטח המיטה",
     codename: "Bed Territory Occupation",
     kind: "choice",
@@ -171,7 +207,6 @@ export const MISSIONS: Mission[] = [
   {
     id: "m9",
     worldId: "w3",
-    order: 9,
     title: "סימולטור משבר הארוחה",
     codename: "Dinner Crisis Simulator",
     kind: "dinner",
@@ -202,13 +237,28 @@ export const MISSIONS: Mission[] = [
     ],
     finalText: "משימה הושלמה.\nשום דבר לא הוזמן.",
   },
+  {
+    id: "m-swipe",
+    worldId: "w3",
+    title: "עובדה או עלילה",
+    codename: "Fact Check",
+    kind: "swipe",
+    xp: 100,
+    intro: "החליקי ימינה אם זה נכון, שמאלה אם לא.",
+    cards: [
+      { id: "c1", text: "[טל עזיזי הוא אהוב ליבך לנצחי נצחים יותר מצ'יפס]", emoji: "🍟", answer: true },
+      { id: "c2", text: "[הדבר היחיד שבא לך עכשיו זה לצאת לריצה בנמל של פארוס]", emoji: "🥦", answer: false },
+      { id: "c3", text: "[עוד_עובדה_נכונה_כאן]", emoji: "📺", answer: true },
+      { id: "c4", text: "[עוד_עובדה_שגויה_כאן]", emoji: "⏰", answer: false },
+    ],
+    successText: "[טקסט_הצלחה_כאן]",
+  },
 
   // ─────────────────────────── WORLD 4 ───────────────────────────
   {
     id: "m10",
     worldId: "w4",
-    order: 10,
-    title: " 'חברים'- הסכסוך הכי גדול מאז הסכסוך הישראלי פלסטיני",
+    title: "בואי נדבר על פרינדז רגע",
     codename: "Friends Infection",
     kind: "choice",
     xp: 100,
@@ -226,7 +276,6 @@ export const MISSIONS: Mission[] = [
   {
     id: "m11",
     worldId: "w4",
-    order: 11,
     title: "סוויט טוט' - מה קוראים אותו שן מתוקה",
     codename: "Sweet Tooth Classification",
     kind: "dragdrop",
@@ -250,7 +299,6 @@ export const MISSIONS: Mission[] = [
   {
     id: "m12",
     worldId: "w4",
-    order: 12,
     title: "מי מתארגן לאט יותר",
     codename: "Wardrobe Algorithm",
     kind: "choice",
@@ -264,12 +312,27 @@ export const MISSIONS: Mission[] = [
     ],
     successText: "תמיד 'יותר'. החישוב עדיין רץ. אנחנו כבר מאחרים.",
   },
+  {
+    id: "m-slider",
+    worldId: "w4",
+    title: "כיול הזיכרון",
+    codename: "Memory Calibration",
+    kind: "slider",
+    xp: 100,
+    question: "[שאלת_ניחוש_מספרי_כאן_למשל_כמה_דקות_לוקח_להתארגן]",
+    subtitle: "כווני את המחוג. יש טווח סלחנות קטן.",
+    min: 0,
+    max: 120,
+    unit: "דקות",
+    correct: 45,
+    tolerance: 10,
+    successText: "[טקסט_הצלחה_כאן]",
+  },
 
   // ─────────────────────────── WORLD 5 ───────────────────────────
   {
     id: "m13",
     worldId: "w5",
-    order: 13,
     title: "אתגר הבינה",
     codename: "AI Challenge",
     kind: "aiduel",
@@ -310,7 +373,6 @@ export const MISSIONS: Mission[] = [
   {
     id: "m14",
     worldId: "w5",
-    order: 14,
     title: "המבט",
     codename: "The Look",
     kind: "faceselect",
@@ -318,7 +380,7 @@ export const MISSIONS: Mission[] = [
     question: "איזה פרצוף תמיד מצחיק את עזיזי?",
     faces: [
       { id: "f1", emoji: "😐", label: "רציני" },
-      { id: "f2", emoji: "🤨", label: "כיווסף אמצע של הגבות", correct: true },
+      { id: "f2", emoji: "🤨", label: "כיווץ אמצע של הגבות", correct: true },
       { id: "f3", emoji: "😴", label: "ישנוני" },
       { id: "f4", emoji: "😎", label: "מגניב" },
       { id: "f5", emoji: "🥹", label: "מתרגש" },
@@ -327,9 +389,20 @@ export const MISSIONS: Mission[] = [
     successText: "הפרצוף של כיווץ הגבות. נשק סודי. אחוז הצלחה: 100%.",
   },
   {
+    id: "m-charge",
+    worldId: "w5",
+    title: "פריצת ליבת הזיכרון",
+    codename: "Core Hack",
+    kind: "charge",
+    xp: 100,
+    prompt: "ה-AI נועל את ליבת הזיכרונות.\nהחזיקי את הכפתור כדי לפרוץ פנימה.",
+    chargeLabel: "החזיקי לפריצה",
+    holdMs: 2500,
+    successText: "הליבה נפרצה. הדרך לשחזור פתוחה.",
+  },
+  {
     id: "m15",
     worldId: "w5",
-    order: 15,
     title: "שחזור המערכת",
     codename: "Restore System",
     kind: "restore",
@@ -340,6 +413,11 @@ export const MISSIONS: Mission[] = [
     successText: "אהפה שילי שוחזרה במלואה. ❤️",
   },
 ];
+
+/** Orders assigned from array position — never renumber by hand. */
+export const MISSIONS: Mission[] = RAW.map(
+  (m, i) => ({ ...m, order: i + 1 }) as Mission,
+);
 
 export const MISSION_BY_ID: Record<string, Mission> = Object.fromEntries(
   MISSIONS.map((m) => [m.id, m]),

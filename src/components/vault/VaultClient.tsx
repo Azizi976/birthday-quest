@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useGameStore, allComplete } from "@/store/useGameStore";
 import { useHydrated } from "@/lib/hooks";
 import { VAULT } from "@/data/story";
-import { Button } from "@/components/ui/Button";
-import { cannonConfetti, heartConfetti, haptic } from "@/lib/effects";
+import { haptic } from "@/lib/effects";
 
-/** Stand-in memory cards. Replace emoji/captions with real <img> when ready. */
 const GALLERY = [
   { emoji: "🥖", caption: "שאטו ד'אור · הדייט הראשון" },
   { emoji: "🛻", caption: "תקרית המשאית המפורסמת" },
@@ -19,8 +17,6 @@ const GALLERY = [
   { emoji: "☕", caption: "מרתון 'חברים'" },
 ];
 
-type Phase = "locked" | "opening" | "open";
-
 export function VaultClient() {
   const hydrated = useHydrated();
   const router = useRouter();
@@ -29,171 +25,127 @@ export function VaultClient() {
   const unlockAchievement = useGameStore((s) => s.unlockAchievement);
   const findEgg = useGameStore((s) => s.findEgg);
   const resetAll = useGameStore((s) => s.resetAll);
-  const [phase, setPhase] = useState<Phase>("locked");
+  const [opened, setOpened] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
 
   const finished = hydrated && allComplete(completed);
 
   useEffect(() => {
-    if (phase === "open") {
+    if (opened) {
       openVault();
       unlockAchievement("legendary-shili");
       findEgg("vault-jewel");
-      cannonConfetti();
       haptic([20, 40, 20, 40, 60]);
     }
-  }, [phase, openVault, unlockAchievement, findEgg]);
+  }, [opened, openVault, unlockAchievement, findEgg]);
 
   if (!hydrated) {
-    return <div className="grid min-h-[100dvh] place-items-center bg-ink text-4xl">💎</div>;
+    return <div className="grid min-h-[100dvh] place-items-center bg-paper text-4xl">🔒</div>;
   }
 
-  // Guard: if the player hasn't finished, gently send them back.
   if (!finished) {
     return (
-      <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-5 bg-gradient-to-b from-ink to-grape-700 px-8 text-center text-white">
+      <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-5 bg-paper px-8 text-center">
         <div className="text-6xl">🔒</div>
-        <p className="text-lg font-bold">הכספת עדיין נעולה.</p>
-        <p className="text-sm text-white/70">צריך לאסוף את כל חמשת הקריסטלים קודם.</p>
-        <Button variant="gold" onClick={() => router.push("/")}>
+        <p className="text-[18px] font-bold text-ink">הכספת עדיין נעולה.</p>
+        <p className="text-[14px] text-ink-muted">צריך לאסוף את כל חמשת הקריסטלים קודם.</p>
+        <button
+          onClick={() => router.push("/")}
+          className="mt-4 border border-ink bg-transparent px-8 py-3 text-[14px] font-semibold text-ink transition-opacity hover:opacity-70"
+        >
           חזרה למסע
-        </Button>
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="min-h-[100dvh] bg-gradient-to-b from-ink via-grape-700 to-grape-600 px-5 pb-16 pt-[calc(env(safe-area-inset-top)+1.5rem)] text-white">
+    <div className="min-h-[100dvh] bg-paper px-6 pb-16 pt-[calc(env(safe-area-inset-top)+2rem)]">
       <AnimatePresence mode="wait">
-        {phase !== "open" ? (
+        {!opened ? (
           <motion.div
-            key="vault-door"
-            exit={{ opacity: 0, scale: 1.2 }}
+            key="locked"
+            exit={{ opacity: 0 }}
             className="flex min-h-[80vh] flex-col items-center justify-center gap-8 text-center"
           >
-            <motion.div
-              animate={
-                phase === "opening"
-                  ? { rotate: [0, -8, 8, -12, 12, 0], scale: [1, 1.05, 1] }
-                  : { scale: [1, 1.04, 1] }
-              }
-              transition={{ duration: phase === "opening" ? 1.2 : 2.5, repeat: phase === "opening" ? 0 : Infinity }}
-              className="relative grid h-56 w-56 place-items-center rounded-full border-8 border-gold-400 bg-gradient-to-br from-grape-600 to-ink shadow-glow"
+            <div className="text-[10px] uppercase tracking-[.16em] text-ink-muted mb-2">
+              כל הקריסטלים נאספו
+            </div>
+            <h1 className="text-[28px] font-bold text-ink">{VAULT.unlockingTitle.replace("משחזר", "פתחי את הכספת").split("...")[0]}</h1>
+            <p className="max-w-xs text-[15px] leading-[1.7] text-ink-soft">
+              כל הזיכרונות שוחזרו. הגיע הרגע לפתוח את האוצר.
+            </p>
+            <button
+              onClick={() => {
+                haptic(30);
+                setOpened(true);
+              }}
+              className="border-none bg-ink px-[44px] py-[15px] text-[15px] font-semibold text-paper transition-opacity hover:opacity-80"
             >
-              <div className="absolute inset-4 rounded-full border-4 border-dashed border-gold-300/50" />
-              <span className="text-7xl">{phase === "opening" ? "🔓" : "🔐"}</span>
-            </motion.div>
-
-            {phase === "locked" ? (
-              <>
-                <h1 className="text-2xl font-extrabold">הכספת הסודית</h1>
-                <p className="max-w-xs text-white/80">
-                  כל הזיכרונות שוחזרו. הגיע הרגע לפתוח את האוצר.
-                </p>
-                <Button
-                  size="lg"
-                  variant="gold"
-                  onClick={() => {
-                    haptic(30);
-                    setPhase("opening");
-                    setTimeout(() => setPhase("open"), 1500);
-                  }}
-                >
-                  🔓 פתחי את הכספת
-                </Button>
-              </>
-            ) : (
-              <motion.p
-                animate={{ opacity: [0.4, 1, 0.4] }}
-                transition={{ duration: 1, repeat: Infinity }}
-                className="font-mono text-lg text-gold-300"
-              >
-                {VAULT.unlockingTitle}
-              </motion.p>
-            )}
+              פתחי את הכספת
+            </button>
           </motion.div>
         ) : (
           <motion.div
-            key="vault-open"
-            initial={{ opacity: 0, y: 30 }}
+            key="open"
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mx-auto flex max-w-md flex-col gap-8"
+            transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+            className="mx-auto flex max-w-[420px] flex-col gap-8"
           >
-            <div className="text-center">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200 }}
-                className="text-6xl"
-              >
-                ✨💝✨
-              </motion.div>
-              <h1 className="mt-2 text-3xl font-extrabold text-gold-300">
-                {VAULT.openedTitle}
-              </h1>
-            </div>
+            {/* Header */}
+            <div className="text-center pt-4">
+              <div className="text-[10px] uppercase tracking-[.16em] text-ink-muted mb-8">
+                הכספת נפתחה
+              </div>
 
-            {/* Birthday message */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="rounded-3xl bg-white/95 p-6 text-center text-ink shadow-soft"
-            >
-              {VAULT.message.map((line, i) => (
-                <motion.p
-                  key={i}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 + i * 0.25 }}
-                  className="text-lg font-bold leading-relaxed"
-                >
-                  {line}
-                </motion.p>
-              ))}
-            </motion.div>
+              {/* Vault message */}
+              <div className="max-w-[300px] mx-auto">
+                {VAULT.message.map((line, i) => (
+                  <motion.p
+                    key={i}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.1 + i * 0.15 }}
+                    className="mb-1 text-[16px] leading-[1.9] text-ink"
+                    style={{ fontWeight: i === 0 || i === VAULT.message.length - 1 ? 700 : 400 }}
+                  >
+                    {line}
+                  </motion.p>
+                ))}
+              </div>
+            </div>
 
             {/* Gallery */}
             <section>
-              <h2 className="mb-3 text-center text-lg font-extrabold text-gold-200">
+              <h2 className="mb-3 text-[11px] uppercase tracking-[.1em] text-ink-muted">
                 📸 {VAULT.galleryTitle}
               </h2>
-              <div className="grid grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-3 gap-2">
                 {GALLERY.map((g, i) => (
                   <motion.div
                     key={i}
-                    initial={{ opacity: 0, scale: 0.8 }}
+                    initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.2 + i * 0.08 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex aspect-square flex-col items-center justify-center gap-1 rounded-2xl bg-gradient-to-br from-blush-300 to-grape-400 p-2 text-center shadow"
+                    transition={{ delay: 0.2 + i * 0.06 }}
+                    className="flex aspect-square flex-col items-center justify-center gap-1 p-2 text-center"
+                    style={{ border: "1px solid #E6E4DF" }}
                   >
                     <span className="text-3xl">{g.emoji}</span>
-                    <span className="text-[9px] font-bold leading-tight text-white">
-                      {g.caption}
-                    </span>
+                    <span className="text-[9px] leading-tight text-ink-muted">{g.caption}</span>
                   </motion.div>
                 ))}
               </div>
-              <p className="mt-2 text-center text-[10px] text-white/50">
-                (החליפי את הקלפים בתמונות אמיתיות בקובץ VaultClient.tsx)
-              </p>
             </section>
 
-            {/* Song section */}
+            {/* Song */}
             <section>
-              <h2 className="mb-3 text-center text-lg font-extrabold text-gold-200">
+              <h2 className="mb-3 text-[11px] uppercase tracking-[.1em] text-ink-muted">
                 🎵 {VAULT.videoTitle}
               </h2>
-              <div className="flex flex-col items-center gap-3 rounded-2xl border-2 border-gold-300/40 bg-black/30 p-5 text-center">
-                <div className="text-4xl">🎶</div>
-                <p className="text-sm font-bold text-white/90">בצקון שלי</p>
-                <audio
-                  controls
-                  preload="metadata"
-                  className="w-full max-w-xs"
-                  src="/betzakon-sheli.mp3"
-                >
+              <div className="flex flex-col items-center gap-3 p-5 text-center" style={{ border: "1px solid #E6E4DF" }}>
+                <p className="text-[14px] font-semibold text-ink">בצקון שלי</p>
+                <audio controls preload="metadata" className="w-full max-w-xs" src="/betzakon-sheli.mp3">
                   הדפדפן שלך לא תומך בנגן השמע.
                 </audio>
               </div>
@@ -201,50 +153,40 @@ export function VaultClient() {
 
             {/* Gift hint */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="rounded-3xl bg-gradient-to-br from-gold-300 to-gold-400 p-5 text-center text-ink shadow-soft"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="p-5 text-center"
+              style={{ border: "1px solid #E6E4DF" }}
             >
-              <p className="text-sm font-bold uppercase tracking-widest">
+              <p className="text-[11px] uppercase tracking-[.08em] text-ink-muted mb-1">
                 {VAULT.treasureDetected}
               </p>
-              <p className="my-1 text-2xl font-extrabold">{VAULT.treasureHint}</p>
-              <p className="text-sm">{VAULT.giftHint}</p>
-              <Button
-                size="md"
-                variant="primary"
-                className="mt-3"
-                onClick={() => {
-                  heartConfetti();
-                  haptic([10, 30, 10, 30, 40]);
-                }}
-              >
-                💖 עוד ❤️
-              </Button>
+              <p className="text-[22px] font-bold text-ink my-1">{VAULT.treasureHint}</p>
+              <p className="text-[14px] text-ink-soft">{VAULT.giftHint}</p>
             </motion.div>
 
-            <Button variant="secondary" onClick={() => router.push("/")}>
+            {/* Back */}
+            <button
+              onClick={() => router.push("/")}
+              className="border border-edge bg-transparent px-8 py-3 text-[14px] font-semibold text-ink transition-opacity hover:opacity-70"
+            >
               חזרה למפה
-            </Button>
+            </button>
 
-            {/* Restart: wipes all progress and replays from the intro. */}
-            <Button
-              variant={confirmReset ? "danger" : "ghost"}
-              size="sm"
-              className="mx-auto"
+            {/* Reset */}
+            <button
               onClick={() => {
-                if (!confirmReset) {
-                  setConfirmReset(true);
-                  haptic(20);
-                  return;
-                }
+                if (!confirmReset) { setConfirmReset(true); haptic(20); return; }
                 haptic([10, 30, 10]);
                 resetAll();
                 router.push("/");
               }}
+              className="mx-auto border-none bg-transparent text-[13px] text-ink-muted underline-offset-4 hover:underline"
+              style={{ color: confirmReset ? "#e53e3e" : undefined }}
             >
-              {confirmReset ? "בטוח/ה? לוחצים שוב כדי לאפס 🔁" : "🔄 התחילי את המסע מחדש"}
-            </Button>
+              {confirmReset ? "בטוח/ה? לוחצים שוב כדי לאפס 🔁" : "התחילי את המסע מחדש"}
+            </button>
           </motion.div>
         )}
       </AnimatePresence>

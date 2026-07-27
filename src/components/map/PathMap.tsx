@@ -1,80 +1,139 @@
 "use client";
 
-import { Fragment } from "react";
+import { useRouter } from "next/navigation";
 import { WORLDS } from "@/data/worlds";
 import { MISSION_BY_ID } from "@/data/missions";
 import { useGameStore, missionStatus } from "@/store/useGameStore";
-import { WorldBanner } from "./WorldBanner";
-import { MissionNode } from "./MissionNode";
+import { haptic } from "@/lib/effects";
 
-/** Horizontal center of a node as a 0..100 viewBox coordinate. */
-const cx = (offset: number) => 50 + offset * 33;
-
-/**
- * The vertical Duolingo-style progression map: worlds separated by banners,
- * winding path of mission nodes joined by an animated SVG trail.
- */
 export function PathMap() {
   const completed = useGameStore((s) => s.completed);
-
-  // Global running index drives the sine-wave offset across all worlds.
-  let globalIndex = -1;
+  const crystals = useGameStore((s) => s.crystals);
 
   return (
-    <div className="mx-auto flex w-full max-w-md flex-col items-center gap-6 px-4 pb-40 pt-[calc(1rem+env(safe-area-inset-top))]">
-      {WORLDS.map((world) => (
-        <Fragment key={world.id}>
-          <WorldBanner world={world} />
-          <div className="flex w-full flex-col items-center">
-            {world.missionIds.map((mid, i) => {
-              globalIndex += 1;
-              const mission = MISSION_BY_ID[mid];
-              const status = missionStatus(mid, completed);
-              const offset = Math.sin(globalIndex * 1.15) * 0.9;
-              const isLastInWorld = i === world.missionIds.length - 1;
-              const nextOffset = Math.sin((globalIndex + 1) * 1.15) * 0.9;
-              const done = status === "completed";
-
-              return (
-                <div key={mid} className="flex w-full flex-col items-center">
-                  <MissionNode mission={mission} status={status} offset={offset} />
-                  {!isLastInWorld && (
-                    <PathConnector from={offset} to={nextOffset} done={done} />
-                  )}
+    <div className="mx-auto max-w-[420px] px-6 pb-20">
+      {WORLDS.map((world) => {
+        const worldDone = world.missionIds.every((id) => completed.includes(id));
+        return (
+          <div key={world.id} className="mt-2">
+            {/* World header */}
+            <div
+              className="flex items-start justify-between py-7"
+              style={{ borderTop: "1px solid #E6E4DF" }}
+            >
+              <div>
+                <div className="text-[10px] uppercase tracking-[.14em] text-ink-muted">
+                  עולם 0{world.order}
                 </div>
-              );
-            })}
+                <div className="mt-0.5 text-[20px] font-bold text-ink">{world.title}</div>
+                <div className="mt-0.5 text-[13px] text-ink-muted">{world.subtitle}</div>
+              </div>
+              {/* Diamond crystal indicator */}
+              <div
+                title={world.crystal.name}
+                className="mt-1.5 flex-none rotate-45"
+                style={{
+                  width: 13,
+                  height: 13,
+                  border: "1.5px solid",
+                  borderColor: worldDone ? "#79876B" : "#D8D6D0",
+                  background: worldDone ? "#79876B" : "transparent",
+                }}
+              />
+            </div>
+
+            {/* Mission rows */}
+            <div className="flex flex-col">
+              {world.missionIds.map((mid, i) => (
+                <MissionRow
+                  key={mid}
+                  missionId={mid}
+                  isFirst={i === 0}
+                  isLast={i === world.missionIds.length - 1}
+                  completed={completed}
+                />
+              ))}
+            </div>
           </div>
-        </Fragment>
-      ))}
+        );
+      })}
     </div>
   );
 }
 
-/** Curved SVG trail between two nodes; glows when the source is completed. */
-function PathConnector({ from, to, done }: { from: number; to: number; done: boolean }) {
-  const x1 = cx(from);
-  const x2 = cx(to);
-  // Smooth S-curve via vertical control points.
-  const d = `M ${x1} 4 C ${x1} 28, ${x2} 28, ${x2} 52`;
+function MissionRow({
+  missionId,
+  isFirst,
+  isLast,
+  completed,
+}: {
+  missionId: string;
+  isFirst: boolean;
+  isLast: boolean;
+  completed: string[];
+}) {
+  const router = useRouter();
+  const mission = MISSION_BY_ID[missionId];
+  const status = missionStatus(missionId, completed);
+  const isCompleted = status === "completed";
+  const isLocked = status === "locked";
+  const dotSize = !isLocked ? 40 : 10;
+
   return (
-    <svg
-      viewBox="0 0 100 56"
-      preserveAspectRatio="none"
-      className="my-1 h-14 w-full"
-      aria-hidden
+    <button
+      onClick={() => {
+        if (isLocked) return;
+        haptic();
+        router.push(`/mission/${missionId}`);
+      }}
+      className="flex w-full items-center gap-4 border-none bg-transparent py-2.5 text-right"
+      style={{ opacity: isLocked ? 0.5 : 1 }}
     >
-      <path
-        d={d}
-        fill="none"
-        strokeLinecap="round"
-        strokeWidth={done ? 5 : 4}
-        className={
-          done
-            ? "stroke-emerald-400 [filter:drop-shadow(0_0_5px_rgba(52,211,153,0.7))]"
-            : "animate-dash-flow stroke-grape-200 [stroke-dasharray:2_10]"
-        }
-      />
-    </svg>
+      {/* Dot + connectors */}
+      <div className="relative flex w-10 flex-none flex-col items-center">
+        {!isFirst && (
+          <div
+            className="absolute bottom-full w-px"
+            style={{ height: 14, background: "#E0DED8" }}
+          />
+        )}
+        <div
+          className="flex items-center justify-center rounded-full text-[13px] font-bold"
+          style={{
+            width: dotSize,
+            height: dotSize,
+            border: isCompleted ? "none" : `1.5px solid ${isLocked ? "#D8D6D0" : "#79876B"}`,
+            background: isCompleted ? "#79876B" : "transparent",
+            color: isCompleted ? "#F9F9F6" : "#2A2A28",
+          }}
+        >
+          {isCompleted ? "✓" : isLocked ? "" : String(mission.order)}
+        </div>
+        {!isLast && (
+          <div
+            className="absolute top-full w-px"
+            style={{ height: 22, background: "#E0DED8" }}
+          />
+        )}
+      </div>
+
+      {/* Title */}
+      <div className="flex-1">
+        <div
+          className="text-[15px]"
+          style={{
+            fontWeight: isLocked ? 400 : 600,
+            color: isLocked ? "#B5B3AD" : "#2A2A28",
+          }}
+        >
+          {mission.title}
+        </div>
+      </div>
+
+      {/* Status label */}
+      <div className="text-[11px]" style={{ color: "#B5B3AD" }}>
+        {isLocked ? "נעול" : ""}
+      </div>
+    </button>
   );
 }

@@ -18,7 +18,7 @@ export const WORLDS: World[] = [
     emoji: "🛂",
     crystal: CRYSTALS.c1,
     gradient: "from-blush-300 to-grape-300",
-    missionIds: ["m1", "m2", "m3"],
+    missionIds: ["m0", "m1", "m2", "m3"],
   },
   {
     id: "w2",
@@ -29,7 +29,7 @@ export const WORLDS: World[] = [
     emoji: "🗺️",
     crystal: CRYSTALS.c2,
     gradient: "from-gold-300 to-blush-300",
-    missionIds: ["m4", "m5", "m6"],
+    missionIds: ["m4", "m5", "m6", "m-order"],
   },
   {
     id: "w3",
@@ -40,7 +40,7 @@ export const WORLDS: World[] = [
     emoji: "⚖️",
     crystal: CRYSTALS.c3,
     gradient: "from-grape-400 to-grape-600",
-    missionIds: ["m7", "m8", "m9"],
+    missionIds: ["m7", "m8", "m9", "m-swipe"],
   },
   {
     id: "w4",
@@ -51,7 +51,7 @@ export const WORLDS: World[] = [
     emoji: "💾",
     crystal: CRYSTALS.c4,
     gradient: "from-emerald-500 to-grape-600",
-    missionIds: ["m10", "m11", "m12"],
+    missionIds: ["m10", "m11", "m12", "m-slider"],
   },
   {
     id: "w5",
@@ -62,7 +62,7 @@ export const WORLDS: World[] = [
     emoji: "🤖",
     crystal: CRYSTALS.c5,
     gradient: "from-ink to-grape-600",
-    missionIds: ["m13", "m14", "m15"],
+    missionIds: ["m13", "m14", "m-charge", "m15"],
   },
 ];
 

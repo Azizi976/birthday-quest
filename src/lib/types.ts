@@ -66,7 +66,12 @@ export type MissionKind =
   | "dragdrop"
   | "aiduel"
   | "faceselect"
-  | "restore";
+  | "restore"
+  | "avatar"
+  | "swipe"
+  | "slider"
+  | "order"
+  | "charge";
 
 interface MissionBase {
   id: string;
@@ -169,6 +174,57 @@ export interface RestoreMission extends MissionBase {
   successText: string;
 }
 
+/** Agent avatar selection — the chosen path is persisted in the store. */
+export interface AvatarMission extends MissionBase {
+  kind: "avatar";
+  prompt: string;
+  /** Local paths under /public, e.g. "/avatars/pic1.jpg". */
+  avatars: { id: string; src: string; label: string }[];
+  successText: string;
+}
+
+/** Tinder-style swipe cards: right = נכון, left = לא נכון. */
+export interface SwipeMission extends MissionBase {
+  kind: "swipe";
+  intro?: string;
+  cards: { id: string; text: string; emoji?: string; answer: boolean }[];
+  successText: string;
+}
+
+/** Slider guess — accept within ±tolerance of `correct`. */
+export interface SliderMission extends MissionBase {
+  kind: "slider";
+  question: string;
+  subtitle?: string;
+  min: number;
+  max: number;
+  /** Unit suffix shown next to the value (e.g. "%", "דקות"). */
+  unit: string;
+  correct: number;
+  tolerance: number;
+  successText: string;
+}
+
+/** Timeline ordering — tap the items in chronological order. */
+export interface OrderMission extends MissionBase {
+  kind: "order";
+  question: string;
+  /** Items listed here in the CORRECT order; the runner shuffles them. */
+  items: { id: string; label: string; emoji?: string }[];
+  successText: string;
+}
+
+/** Hold-to-charge — long-press to "hack"/restore a memory. */
+export interface ChargeMission extends MissionBase {
+  kind: "charge";
+  prompt: string;
+  /** Label on the hold button. */
+  chargeLabel: string;
+  /** How long the button must be held, in ms. */
+  holdMs: number;
+  successText: string;
+}
+
 export type Mission =
   | CodewordMission
   | ChoiceMission
@@ -178,7 +234,12 @@ export type Mission =
   | DragDropMission
   | AiDuelMission
   | FaceSelectMission
-  | RestoreMission;
+  | RestoreMission
+  | AvatarMission
+  | SwipeMission
+  | SliderMission
+  | OrderMission
+  | ChargeMission;
 
 export interface Achievement {
   id: string;

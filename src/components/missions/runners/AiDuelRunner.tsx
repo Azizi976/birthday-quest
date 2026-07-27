@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { AiDuelMission, Choice } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { haptic } from "@/lib/effects";
 import { useGameStore } from "@/store/useGameStore";
 
@@ -57,7 +56,7 @@ export function AiDuelRunner({ mission, onComplete }: Props) {
         <motion.p
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="rounded-3xl bg-grape-600 p-5 text-center text-lg font-extrabold text-white"
+          className="bg-ink p-5 text-center text-lg font-bold text-paper"
         >
           “לא... לא יכול להיות... את באמת מכירה אותו הכי טוב.” 😭
         </motion.p>
@@ -70,34 +69,54 @@ export function AiDuelRunner({ mission, onComplete }: Props) {
             exit={{ opacity: 0, x: -30 }}
             className="flex flex-col gap-4"
           >
-            <p className="rounded-2xl bg-grape-700 px-4 py-2 text-center text-sm font-semibold italic text-grape-100">
+            <p className="px-4 py-2 text-[13px] italic text-ink-muted" style={{ borderRight: "2px solid #E6E4DF" }}>
               🤖 “{current.aiTaunt}”
             </p>
-            <p className="text-center text-xl font-extrabold">{current.question}</p>
-            <div className="flex flex-col gap-3">
+            <h2 className="text-[26px] font-bold leading-[1.35] text-ink">{current.question}</h2>
+            <div className="flex flex-col">
               {current.choices.map((c) => {
                 const isPicked = picked === c.id;
-                const state = isPicked ? (c.correct ? "correct" : "wrong") : "idle";
+                const isCorrect = isPicked && c.correct;
+                const isWrong = isPicked && !c.correct;
                 return (
                   <motion.button
                     key={c.id}
                     onClick={() => choose(c)}
-                    whileTap={{ scale: 0.97 }}
-                    animate={state === "wrong" ? { x: [0, -8, 8, 0] } : {}}
-                    className={cn(
-                      "flex items-center gap-3 rounded-2xl border-2 px-4 py-3.5 text-start text-lg font-bold transition",
-                      state === "idle" && "border-grape-300 bg-white/10 text-white",
-                      state === "correct" && "border-emerald-400 bg-emerald-500 text-white",
-                      state === "wrong" && "border-red-400 bg-red-500/30 text-white",
-                    )}
+                    animate={isWrong ? { x: [0, -6, 6, -3, 0] } : {}}
+                    className="flex w-full items-center gap-3 border-none bg-transparent py-4 text-right"
+                    style={{
+                      borderBottom: "1px solid #E6E4DF",
+                      background: isCorrect ? "#EDEFE9" : "transparent",
+                    }}
                   >
-                    {c.emoji && <span className="text-2xl">{c.emoji}</span>}
-                    <span>{c.label}</span>
+                    <span
+                      className="flex flex-none items-center justify-center rounded-full"
+                      style={{
+                        width: 16,
+                        height: 16,
+                        border: `1.5px solid ${isCorrect ? "#79876B" : isWrong ? "#e53e3e" : "#D8D6D0"}`,
+                        background: isCorrect ? "#79876B" : "transparent",
+                        fontSize: 9,
+                        color: "#F9F9F6",
+                      }}
+                    >
+                      {isCorrect ? "✓" : ""}
+                    </span>
+                    {c.emoji && <span className="text-xl">{c.emoji}</span>}
+                    <span
+                      className="flex-1 text-[15px]"
+                      style={{
+                        color: isCorrect ? "#3E4A36" : isWrong ? "#e53e3e" : "#2A2A28",
+                        fontWeight: isCorrect ? 600 : 400,
+                      }}
+                    >
+                      {c.label}
+                    </span>
                   </motion.button>
                 );
               })}
             </div>
-            <p className="text-center text-xs text-grape-200">
+            <p className="text-center text-[11px] text-ink-faint">
               שאלה {q + 1} מתוך {mission.questions.length}
             </p>
           </motion.div>

@@ -1,11 +1,5 @@
 import type { Config } from "tailwindcss";
 
-/**
- * Tailwind configuration for "מבצע שילי".
- * Theme: warm pink, soft purple, cream, gold accents.
- * RTL is handled at the document level (dir="rtl"); Tailwind logical
- * utilities (ms-*, me-*, ps-*, pe-*, start-*, end-*) are preferred in markup.
- */
 const config: Config = {
   content: [
     "./src/app/**/*.{ts,tsx}",
@@ -15,11 +9,30 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Design system palette
+        paper: "#F9F9F6",
+        ink: {
+          DEFAULT: "#2A2A28",
+          soft: "#5B5A55",
+          muted: "#8B8983",
+          faint: "#B5B3AD",
+          ghost: "#C7C5BF",
+        },
+        sage: {
+          DEFAULT: "#79876B",
+          dark: "#5E6B53",
+        },
+        edge: {
+          DEFAULT: "#E6E4DF",
+          light: "#D8D6D0",
+        },
+        hover: "#EDEFE9",
+        // Legacy palette kept for vault/toast/achievements
         cream: {
-          DEFAULT: "#FFF6EC",
-          50: "#FFFBF5",
-          100: "#FFF6EC",
-          200: "#FCEBD7",
+          DEFAULT: "#F9F9F6",
+          50: "#FAFAF8",
+          100: "#F9F9F6",
+          200: "#F0EFEB",
         },
         blush: {
           DEFAULT: "#FF7EB6",
@@ -51,10 +64,6 @@ const config: Config = {
           400: "#FFC857",
           500: "#F5AE2E",
         },
-        ink: {
-          DEFAULT: "#3A2A4D",
-          soft: "#6B5B7B",
-        },
       },
       fontFamily: {
         sans: ["var(--font-app)", "system-ui", "sans-serif"],
@@ -62,51 +71,27 @@ const config: Config = {
       boxShadow: {
         node: "0 8px 0 0 rgba(0,0,0,0.12)",
         "node-press": "0 3px 0 0 rgba(0,0,0,0.12)",
-        soft: "0 10px 40px -12px rgba(155,107,255,0.45)",
-        glow: "0 0 30px rgba(255,126,182,0.6)",
-        // Diffused, layered shadows for a premium glass/clay feel.
-        sheet: "0 -8px 40px -8px rgba(58,42,77,0.22)",
-        card: "0 2px 6px -2px rgba(58,42,77,0.10), 0 12px 28px -12px rgba(155,107,255,0.30)",
-        "glow-emerald": "0 0 24px rgba(52,211,153,0.55)",
+        soft: "0 10px 40px -12px rgba(0,0,0,0.12)",
+        glow: "0 0 30px rgba(121,135,107,0.4)",
+        sheet: "0 -8px 40px -8px rgba(42,42,40,0.12)",
+        card: "0 2px 6px -2px rgba(42,42,40,0.08), 0 12px 28px -12px rgba(42,42,40,0.10)",
       },
       keyframes: {
         "float-y": {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-8px)" },
         },
-        "pulse-ring": {
-          "0%": { transform: "scale(0.9)", opacity: "0.7" },
-          "70%": { transform: "scale(1.4)", opacity: "0" },
-          "100%": { opacity: "0" },
+        "fade-up": {
+          from: { opacity: "0", transform: "translateY(10px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
         },
-        shimmer: {
-          "100%": { transform: "translateX(100%)" },
-        },
-        "pop-in": {
-          "0%": { transform: "scale(0.6)", opacity: "0" },
-          "60%": { transform: "scale(1.08)", opacity: "1" },
-          "100%": { transform: "scale(1)" },
-        },
-        wiggle: {
-          "0%, 100%": { transform: "rotate(-3deg)" },
-          "50%": { transform: "rotate(3deg)" },
-        },
-        "gradient-pan": {
-          "0%, 100%": { backgroundPosition: "0% 50%" },
-          "50%": { backgroundPosition: "100% 50%" },
-        },
-        // Marching-ants dash flow for the map path.
         "dash-flow": {
           to: { strokeDashoffset: "-16" },
         },
       },
       animation: {
         "float-y": "float-y 3s ease-in-out infinite",
-        "pulse-ring": "pulse-ring 2s cubic-bezier(0.4,0,0.6,1) infinite",
-        shimmer: "shimmer 2s infinite",
-        "pop-in": "pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1)",
-        wiggle: "wiggle 0.4s ease-in-out infinite",
-        "gradient-pan": "gradient-pan 6s ease infinite",
+        "fade-up": "fade-up .7s cubic-bezier(0.25,1,0.5,1) both",
         "dash-flow": "dash-flow 0.6s linear infinite",
       },
     },

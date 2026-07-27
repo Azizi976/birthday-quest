@@ -16,6 +16,11 @@ import { DragDropRunner } from "./runners/DragDropRunner";
 import { AiDuelRunner } from "./runners/AiDuelRunner";
 import { FaceSelectRunner } from "./runners/FaceSelectRunner";
 import { RestoreRunner } from "./runners/RestoreRunner";
+import { AvatarRunner } from "./runners/AvatarRunner";
+import { SwipeRunner } from "./runners/SwipeRunner";
+import { SliderRunner } from "./runners/SliderRunner";
+import { OrderRunner } from "./runners/OrderRunner";
+import { ChargeRunner } from "./runners/ChargeRunner";
 
 interface Props {
   mission: Mission;
@@ -85,28 +90,26 @@ function Runner({ mission, onComplete }: { mission: Mission; onComplete: (xp: nu
       return <FaceSelectRunner mission={mission} onComplete={onComplete} />;
     case "restore":
       return <RestoreRunner mission={mission} onComplete={onComplete} />;
+    case "avatar":
+      return <AvatarRunner mission={mission} onComplete={onComplete} />;
+    case "swipe":
+      return <SwipeRunner mission={mission} onComplete={onComplete} />;
+    case "slider":
+      return <SliderRunner mission={mission} onComplete={onComplete} />;
+    case "order":
+      return <OrderRunner mission={mission} onComplete={onComplete} />;
+    case "charge":
+      return <ChargeRunner mission={mission} onComplete={onComplete} />;
   }
 }
 
 function successTextOf(mission: Mission): string {
   switch (mission.kind) {
-    case "codeword":
-      return mission.successText;
-    case "choice":
-      return mission.successText;
-    case "map":
-      return mission.successText;
     case "courtroom":
       return mission.verdictText;
     case "dinner":
       return mission.finalText;
-    case "dragdrop":
-      return mission.successText;
-    case "aiduel":
-      return mission.successText;
-    case "faceselect":
-      return mission.successText;
-    case "restore":
+    default:
       return mission.successText;
   }
 }

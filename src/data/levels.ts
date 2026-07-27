@@ -5,7 +5,7 @@ export const XP_PER_LEVEL = 100;
 
 /** Named ranks unlocked at level thresholds (Hebrew flavor). */
 export const RANKS: Rank[] = [
-  { level: 1, title: "בלמז''ית" },
+  { level: 1, title: "תינוק שילי" },
   { level: 3, title: "שותפה שילי" },
   { level: 6, title: "אהפה שילי" },
   { level: 9, title: "ניסיכה שילי" },

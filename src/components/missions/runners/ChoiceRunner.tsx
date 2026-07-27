@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import type { ChoiceMission, Choice } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { haptic } from "@/lib/effects";
 import { useSabotage } from "@/components/missions/useSabotage";
 import { SabotageOverlay } from "@/components/missions/SabotageOverlay";
@@ -13,7 +12,6 @@ interface Props {
   onComplete: (xp: number) => void;
 }
 
-/** Generic single-choice quiz. Supports per-choice feedback + bonus XP. */
 export function ChoiceRunner({ mission, onComplete }: Props) {
   const [picked, setPicked] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -42,33 +40,58 @@ export function ChoiceRunner({ mission, onComplete }: Props) {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col">
       {mission.subtitle && (
-        <p className="rounded-2xl bg-black/5 px-4 py-2 text-center text-sm font-semibold text-ink-soft">
-          {mission.subtitle}
-        </p>
+        <p className="mb-2.5 text-[13px] leading-[1.6] text-ink-muted">{mission.subtitle}</p>
       )}
-      <p className="text-center text-xl font-bold">{mission.question}</p>
 
-      <div className="mt-2 flex flex-col gap-3">
+      <h2
+        className="mb-7 text-[26px] font-bold leading-[1.35] text-ink"
+        style={{ whiteSpace: "pre-line" }}
+      >
+        {mission.question}
+      </h2>
+
+      <div className="flex flex-col">
         {mission.choices.map((c) => {
           const isPicked = picked === c.id;
-          const state = isPicked ? (c.correct ? "correct" : "wrong") : "idle";
+          const isCorrect = isPicked && c.correct;
+          const isWrong = isPicked && !c.correct;
           return (
             <motion.button
               key={c.id}
               onClick={() => choose(c)}
-              whileTap={{ scale: 0.97 }}
-              animate={state === "wrong" ? { x: [0, -8, 8, -4, 0] } : {}}
-              className={cn(
-                "flex items-center gap-3 rounded-2xl border-2 bg-white px-4 py-4 text-start text-lg font-bold transition",
-                state === "idle" && "border-grape-200 text-ink hover:border-blush-300",
-                state === "correct" && "border-emerald-400 bg-emerald-50 text-emerald-700",
-                state === "wrong" && "border-red-400 bg-red-50 text-red-600",
-              )}
+              animate={isWrong ? { x: [0, -6, 6, -3, 0] } : {}}
+              className="flex w-full items-center gap-3 border-none bg-transparent py-4 text-right"
+              style={{
+                borderBottom: "1px solid #E6E4DF",
+                background: isCorrect ? "#EDEFE9" : "transparent",
+              }}
             >
-              {c.emoji && <span className="text-2xl">{c.emoji}</span>}
-              <span>{c.label}</span>
+              {/* Circle mark */}
+              <span
+                className="flex flex-none items-center justify-center rounded-full"
+                style={{
+                  width: 16,
+                  height: 16,
+                  border: `1.5px solid ${isCorrect ? "#79876B" : isWrong ? "#e53e3e" : "#D8D6D0"}`,
+                  background: isCorrect ? "#79876B" : "transparent",
+                  fontSize: 9,
+                  color: "#F9F9F6",
+                }}
+              >
+                {isCorrect ? "✓" : ""}
+              </span>
+              {c.emoji && <span className="text-xl">{c.emoji}</span>}
+              <span
+                className="flex-1 text-[15px]"
+                style={{
+                  color: isCorrect ? "#3E4A36" : isWrong ? "#e53e3e" : "#2A2A28",
+                  fontWeight: isCorrect ? 600 : 400,
+                }}
+              >
+                {c.label}
+              </span>
             </motion.button>
           );
         })}
@@ -76,9 +99,10 @@ export function ChoiceRunner({ mission, onComplete }: Props) {
 
       {feedback && (
         <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center text-base font-semibold text-grape-600"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="mt-5 text-[14px] text-sage"
         >
           {feedback}
         </motion.p>

@@ -28,9 +28,12 @@ export interface GameState {
   wrongStreak: number;
   /** Whether the final vault has been opened. */
   vaultOpened: boolean;
+  /** Chosen agent avatar image path (e.g. "/avatars/pic1.jpg"). */
+  avatar: string | null;
 
   // ── actions ──
   setIntroSeen: () => void;
+  setAvatar: (src: string) => void;
   completeMission: (missionId: string, earnedXp: number) => void;
   unlockAchievement: (id: string) => boolean;
   findEgg: (id: string) => boolean;
@@ -56,8 +59,11 @@ export const useGameStore = create<GameState>()(
       eggs: [],
       wrongStreak: 0,
       vaultOpened: false,
+      avatar: null,
 
       setIntroSeen: () => set({ introSeen: true }),
+
+      setAvatar: (src) => set({ avatar: src }),
 
       completeMission: (missionId, earnedXp) => {
         const state = get();
@@ -136,6 +142,7 @@ export const useGameStore = create<GameState>()(
           eggs: [],
           wrongStreak: 0,
           vaultOpened: false,
+          avatar: null,
         }),
     }),
     {

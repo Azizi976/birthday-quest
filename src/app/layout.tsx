@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Rubik } from "next/font/google";
+import { Assistant } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/Toaster";
 import { GlobalEggs } from "@/components/easter-eggs/GlobalEggs";
@@ -7,9 +7,9 @@ import { AchievementWatcher } from "@/components/achievements/AchievementWatcher
 import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import { APP } from "@/data/story";
 
-const rubik = Rubik({
+const assistant = Assistant({
   subsets: ["hebrew", "latin"],
-  weight: ["400", "500", "700", "800", "900"],
+  weight: ["300", "400", "500", "600", "700", "800"],
   variable: "--font-app",
   display: "swap",
 });
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FF7EB6",
+  themeColor: "#F9F9F6",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -45,15 +45,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="he" dir="rtl" className={rubik.variable}>
+    <html lang="he" dir="rtl" className={assistant.variable}>
       <head>
-        {/* iOS PWA: hide Safari UI when launched from the Home Screen. */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content={APP.shortTitle} />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-        {/* iOS splash screen */}
         <link rel="apple-touch-startup-image" href="/icons/splash.png" />
       </head>
       <body className="antialiased">

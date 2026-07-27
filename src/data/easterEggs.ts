@@ -112,7 +112,7 @@ export const MICRO_EGGS = {
   shakeToConfetti: "ניענעת את העולם. הנה קונפטי. 🎉",
   tripleTapXp: "מצאת XP נסתר! +20",
   secretCrystal: "קריסטל סקרנות נוסף לאוסף שלך. 🔮",
-  footerHeart: "נבנה עם ❤️ בשביל עדי",
+  footerHeart: "את כל חיי חרדון קטן שילי הגעת לסוף",
   consoleHello: "👀 מה את עושה פה? לכי תשחקי. (אבל יפה שאת סקרנית)",
 } as const;
 

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import type { CodewordMission } from "@/lib/types";
 import { matchesAnswer } from "@/lib/utils";
-import { Button } from "@/components/ui/Button";
 import { useSabotage } from "@/components/missions/useSabotage";
 import { SabotageOverlay } from "@/components/missions/SabotageOverlay";
 
@@ -24,46 +23,53 @@ export function CodewordRunner({ mission, onComplete }: Props) {
       onComplete(mission.xp);
     } else {
       setError(true);
+      setShowHint(true);
       onWrong();
       setTimeout(() => setError(false), 600);
     }
   };
 
   return (
-    <div className="flex flex-col gap-5">
-      <p className="whitespace-pre-line text-center text-lg leading-relaxed text-ink-soft">
+    <div className="flex flex-col">
+      <h2
+        className="mb-7 whitespace-pre-line text-[26px] font-bold leading-[1.35] text-ink"
+      >
         {mission.prompt}
-      </p>
+      </h2>
 
-      <motion.div animate={error ? { x: [0, -10, 10, -6, 0] } : {}}>
-        <input
+      <div>
+        <motion.input
           dir="rtl"
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && submit()}
           placeholder={mission.placeholder}
-          className="w-full rounded-2xl border-2 border-grape-200 bg-white px-5 py-4 text-center text-xl font-bold text-ink shadow-inner outline-none transition focus:border-blush-400"
+          animate={error ? { x: [0, -8, 8, -4, 0] } : {}}
+          className="w-full border-none bg-transparent text-[16px] text-ink outline-none"
+          style={{
+            borderBottom: `1px solid ${error ? "#e53e3e" : "#2A2A28"}`,
+            padding: "12px 4px",
+          }}
         />
-      </motion.div>
-
-      {error && (
-        <p className="text-center text-sm font-semibold text-red-400">
-          שם הקוד שגוי. נסי שוב, סוכנת.
-        </p>
-      )}
-
-      <Button size="lg" onClick={submit} disabled={!value.trim()}>
-        אימות זהות
-      </Button>
-
-      {mission.hint && (
         <button
-          onClick={() => setShowHint((s) => !s)}
-          className="text-center text-sm font-semibold text-grape-500 underline-offset-4 hover:underline"
+          onClick={submit}
+          disabled={!value.trim()}
+          className="mt-6 w-full border-none py-[15px] text-[14px] font-semibold text-paper transition-opacity disabled:opacity-40 hover:opacity-80"
+          style={{ background: "#2A2A28" }}
         >
-          {showHint ? `💡 ${mission.hint}` : "צריכה רמז?"}
+          שליחה
         </button>
-      )}
+
+        {showHint && mission.hint && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-3.5 text-[13px] text-ink-muted"
+          >
+            רמז: {mission.hint}
+          </motion.p>
+        )}
+      </div>
 
       <SabotageOverlay open={sabotage} onClose={dismiss} />
     </div>
