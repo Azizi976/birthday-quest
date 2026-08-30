@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useGameStore, allComplete } from "@/store/useGameStore";
 import { useHydrated } from "@/lib/hooks";
@@ -17,6 +18,18 @@ export function HomeClient() {
   const introSeen = useGameStore((s) => s.introSeen);
   const setIntroSeen = useGameStore((s) => s.setIntroSeen);
   const completed = useGameStore((s) => s.completed);
+  const resetAll = useGameStore((s) => s.resetAll);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("reset") || params.has("restart") || params.has("new")) {
+        resetAll();
+        // Clean URL without reloading
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+    }
+  }, [resetAll]);
 
   if (!hydrated) {
     return (
