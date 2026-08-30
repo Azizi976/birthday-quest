@@ -38,7 +38,7 @@ export function CourtroomRunner({ mission, onComplete }: Props) {
       <div className="rounded-3xl border-2 border-grape-200 bg-white p-5 shadow">
         <Row label="תובע" value={mission.prosecutor} emoji="🧑‍⚖️" />
         <Row label="נאשמת" value={mission.defendant} emoji="🙅‍♀️" />
-        <Row label="אישום" value={mission.charge} emoji="🛏️" highlight />
+        <Row label="אישום" value={mission.charge} highlight />
         <p className="mt-3 rounded-2xl bg-grape-50 p-3 text-sm leading-relaxed text-ink-soft">
           “{mission.intro}”
         </p>
@@ -87,14 +87,14 @@ function Row({
 }: {
   label: string;
   value: string;
-  emoji: string;
+  emoji?: string;
   highlight?: boolean;
 }) {
   return (
     <div className="flex items-center justify-between border-b border-grape-100 py-2 last:border-0">
       <span className="text-sm font-bold text-ink-soft">{label}</span>
       <span className={highlight ? "font-extrabold text-blush-600" : "font-bold text-ink"}>
-        {emoji} {value}
+        {emoji ? `${emoji} ` : ""}{value}
       </span>
     </div>
   );

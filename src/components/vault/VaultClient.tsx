@@ -8,15 +8,6 @@ import { useHydrated } from "@/lib/hooks";
 import { VAULT } from "@/data/story";
 import { haptic } from "@/lib/effects";
 
-const GALLERY = [
-  { emoji: "🥖", caption: "שאטו ד'אור · הדייט הראשון" },
-  { emoji: "🛻", caption: "תקרית המשאית המפורסמת" },
-  { emoji: "🍝", caption: "ארוחת הערב עם השותפים" },
-  { emoji: "🏜️", caption: "גיזה" },
-  { emoji: "🏝️", caption: "תאילנד" },
-  { emoji: "☕", caption: "מרתון 'חברים'" },
-];
-
 export function VaultClient() {
   const hydrated = useHydrated();
   const router = useRouter();
@@ -115,28 +106,6 @@ export function VaultClient() {
                 ))}
               </div>
             </div>
-
-            {/* Gallery */}
-            <section>
-              <h2 className="mb-3 text-[11px] uppercase tracking-[.1em] text-ink-muted">
-                📸 {VAULT.galleryTitle}
-              </h2>
-              <div className="grid grid-cols-3 gap-2">
-                {GALLERY.map((g, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.2 + i * 0.06 }}
-                    className="flex aspect-square flex-col items-center justify-center gap-1 p-2 text-center"
-                    style={{ border: "1px solid #E6E4DF" }}
-                  >
-                    <span className="text-3xl">{g.emoji}</span>
-                    <span className="text-[9px] leading-tight text-ink-muted">{g.caption}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </section>
 
             {/* Song */}
             <section>

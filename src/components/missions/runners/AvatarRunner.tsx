@@ -66,10 +66,6 @@ export function AvatarRunner({ mission, onComplete }: Props) {
       >
         אישור פרופיל
       </button>
-
-      <p className="mt-3.5 text-center text-[11px] text-ink-faint">
-        (שימי את התמונות האמיתיות בתיקייה public/avatars)
-      </p>
     </div>
   );
 }
