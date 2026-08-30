@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import type { CodewordMission } from "@/lib/types";
 import { matchesAnswer } from "@/lib/utils";
@@ -17,8 +17,10 @@ export function CodewordRunner({ mission, onComplete }: Props) {
   const [error, setError] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const { sabotage, onWrong, dismiss } = useSabotage();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const submit = () => {
+    inputRef.current?.blur();
     if (matchesAnswer(value, mission.answers)) {
       onComplete(mission.xp);
     } else {
@@ -39,11 +41,19 @@ export function CodewordRunner({ mission, onComplete }: Props) {
 
       <div>
         <motion.input
+          ref={inputRef}
           dir="rtl"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && submit()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              submit();
+            }
+          }}
           placeholder={mission.placeholder}
+          enterKeyHint="done"
+          inputMode="text"
           animate={error ? { x: [0, -8, 8, -4, 0] } : {}}
           className="w-full border-none bg-transparent text-[16px] text-ink outline-none"
           style={{
@@ -52,6 +62,7 @@ export function CodewordRunner({ mission, onComplete }: Props) {
           }}
         />
         <button
+          type="button"
           onClick={submit}
           disabled={!value.trim()}
           className="mt-6 w-full border-none py-[15px] text-[14px] font-semibold text-paper transition-opacity disabled:opacity-40 hover:opacity-80"

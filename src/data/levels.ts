@@ -24,8 +24,3 @@ export function rankFromLevel(level: number): Rank {
   }
   return current;
 }
-
-/** Progress (0..1) toward the next level. */
-export function levelProgress(xp: number): number {
-  return (xp % XP_PER_LEVEL) / XP_PER_LEVEL;
-}
