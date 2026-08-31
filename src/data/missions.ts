@@ -42,12 +42,12 @@ const RAW: RawMission[] = [
     xp: 100,
     question: "ברוכה הבאה סוכנת.\nמהו שם הקוד הרשמי שלך?",
     choices: [
-      { id: "a", label: "צ'אפו ליובין", emoji: "🕵️‍♀️", correct: true, feedback: "זיהוי אומת בהצלחה!" },
-      { id: "b", label: "סוכנת 007", emoji: "🕶️" },
-      { id: "c", label: "אבטמו מהקומה למטה", emoji: "🧍" },
-      { id: "d", label: "הנסיכה של באבו", emoji: "👑" },
+      { id: "a", label: "צ'אפו ליובין", emoji: "🕵️‍♀️", correct: true, feedback: "זיהוי אומת: צ'אפו ליובין 💗" },
+      { id: "b", label: "סוכנת 007", emoji: "🕶️", correct: true, feedback: "זיהוי אומת: סוכנת 007 🕶️" },
+      { id: "c", label: "אבטמו מהקומה למטה", emoji: "🧍", correct: true, feedback: "זיהוי אומת: אבטמו מהקומה למטה 😂" },
+      { id: "d", label: "הנסיכה של באבו", emoji: "👑", correct: true, feedback: "זיהוי אומת: הנסיכה של באבו 👑" },
     ],
-    successText: "זיהוי אומת. ברוכה הבאה, צ'אפו ליובין. 💗",
+    successText: "זיהוי אומת בהצלחה. ברוכה הבאה למערכת! 💗",
   },
   {
     id: "m2",

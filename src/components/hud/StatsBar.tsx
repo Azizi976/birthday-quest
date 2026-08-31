@@ -11,6 +11,7 @@ export function StatsBar() {
   const completed = useGameStore((s) => s.completed);
   const crystals = useGameStore((s) => s.crystals);
   const avatar = useGameStore((s) => s.avatar);
+  const agentName = useGameStore((s) => s.agentName);
 
   const level = currentLevel(xp);
   const rank = rankFromLevel(level);
@@ -34,9 +35,11 @@ export function StatsBar() {
           {avatar && <AgentAvatar src={avatar} />}
           <div>
             <div className="text-[10px] uppercase tracking-[.14em] text-ink-muted">
-              רמה {level}
+              רמה {level} · {rank.title}
             </div>
-            <div className="text-[15px] font-bold text-ink">{rank.title}</div>
+            <div className="text-[15px] font-bold text-ink">
+              {agentName || "סוכנת שילי"}
+            </div>
           </div>
         </div>
         <div className="flex items-baseline gap-2.5 text-[13px] text-ink-muted">

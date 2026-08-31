@@ -30,10 +30,13 @@ export interface GameState {
   vaultOpened: boolean;
   /** Chosen agent avatar image path (e.g. "/avatars/pic1.jpg"). */
   avatar: string | null;
+  /** Chosen agent codename / nickname (selected in mission m1). */
+  agentName: string | null;
 
   // ── actions ──
   setIntroSeen: () => void;
   setAvatar: (src: string) => void;
+  setAgentName: (name: string) => void;
   completeMission: (missionId: string, earnedXp: number) => void;
   unlockAchievement: (id: string) => boolean;
   findEgg: (id: string) => boolean;
@@ -60,10 +63,13 @@ export const useGameStore = create<GameState>()(
       wrongStreak: 0,
       vaultOpened: false,
       avatar: null,
+      agentName: null,
 
       setIntroSeen: () => set({ introSeen: true }),
 
       setAvatar: (src) => set({ avatar: src }),
+
+      setAgentName: (name) => set({ agentName: name }),
 
       completeMission: (missionId, earnedXp) => {
         const state = get();
@@ -143,6 +149,7 @@ export const useGameStore = create<GameState>()(
           wrongStreak: 0,
           vaultOpened: false,
           avatar: null,
+          agentName: null,
         }),
     }),
     {

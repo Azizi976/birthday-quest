@@ -17,6 +17,7 @@ export function Hero() {
   const [note, setNote] = useState(false);
   const unlockAchievement = useGameStore((s) => s.unlockAchievement);
   const findEgg = useGameStore((s) => s.findEgg);
+  const agentName = useGameStore((s) => s.agentName);
 
   const onLogoTap = useTapCounter(10, () => {
     haptic([10, 30, 10]);
@@ -48,7 +49,7 @@ export function Hero() {
           className="bg-transparent border-none font-bold text-ink text-[12px] cursor-default"
           aria-label="שם סוכנת"
         >
-          {CHARACTERS.agent}
+          {agentName || CHARACTERS.agent}
         </button>
         {" · "}יעד: שחזור הזיכרונות
       </p>

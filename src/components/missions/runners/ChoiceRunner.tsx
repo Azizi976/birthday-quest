@@ -6,6 +6,7 @@ import type { ChoiceMission, Choice } from "@/lib/types";
 import { haptic } from "@/lib/effects";
 import { useSabotage } from "@/components/missions/useSabotage";
 import { SabotageOverlay } from "@/components/missions/SabotageOverlay";
+import { useGameStore } from "@/store/useGameStore";
 
 interface Props {
   mission: ChoiceMission;
@@ -16,10 +17,16 @@ export function ChoiceRunner({ mission, onComplete }: Props) {
   const [picked, setPicked] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
   const { sabotage, onWrong, dismiss } = useSabotage();
+  const setAgentName = useGameStore((s) => s.setAgentName);
 
   const choose = (c: Choice) => {
     if (picked) return;
     setPicked(c.id);
+
+    if (mission.id === "m1") {
+      setAgentName(c.label);
+    }
+
     if (c.correct) {
       haptic([10, 20, 10]);
       const xp = mission.xp + (c.bonusXp ?? 0);
