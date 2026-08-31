@@ -23,7 +23,10 @@ export function StatsBar() {
         background: "rgba(249,249,246,0.92)",
         backdropFilter: "blur(6px)",
         borderBottom: "1px solid #E6E4DF",
-        padding: "18px 24px 14px",
+        paddingTop: "calc(16px + env(safe-area-inset-top, 0px))",
+        paddingBottom: "14px",
+        paddingLeft: "calc(24px + env(safe-area-inset-left, 0px))",
+        paddingRight: "calc(24px + env(safe-area-inset-right, 0px))",
       }}
     >
       <div className="mx-auto flex max-w-[420px] items-center justify-between">
