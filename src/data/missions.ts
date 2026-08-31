@@ -122,7 +122,7 @@ const RAW: RawMission[] = [
       { id: "c", label: "רביד והמלצר", emoji: "🤵" },
       { id: "d", label: "ההורים של בטי הכלבה", emoji: "🕵️", feedback: "חייבים להזמין אותם לדאבל דייט" },
     ],
-    successText: "גור ורביד. אשכרה כמעט דרסה אותנו משאית בעיר התיקה ועדיין הזמנו להם צייסרים, איזה זוג.",
+    successText: "גור ורביד. אשכרה כמעט דרסה אותנו משאית בעיר העתיקה ועדיין הזמנו להם צייסרים, איזה זוג.",
   },
   {
     id: "m6",
@@ -140,7 +140,7 @@ const RAW: RawMission[] = [
         correct: true,
       },
       { id: "b", label: "הלילה ההוא שראינו טלוויזיה ונרדמת לי על הכתף", emoji: "🎬" },
-      { id: "c", label: "היום הולדת שלי בברבור", emoji: "🌧️" },
+      { id: "c", label: "היום הולדת שלי בברבור", emoji: "🦢" },
       { id: "d", label: "ההוא עם הצ'יפס", emoji: "🍟", feedback: "כל דייט הוא 'ההוא עם הצ'יפס'." },
     ],
     successText: "ארוחת הערב בדירה שלי ושל מאי . קלאסיקה. ותראי איפה אנחנו היום !",
@@ -348,8 +348,8 @@ const RAW: RawMission[] = [
         aiTaunt: "בזריז לסמן את התשובה הנכונה זאת לא שאלה בכלל",
         choices: [
           { id: "a", label: "צ'יפס", emoji: "🍟", correct: true },
-          { id: "b", label: "סושי", emoji: "🥣" },
-          { id: "c", label: "המבורגר", emoji: "🥬" },
+          { id: "b", label: "סושי", emoji: "🍣" },
+          { id: "c", label: "המבורגר", emoji: "🦢" },
         ],
       },
       {
@@ -362,12 +362,12 @@ const RAW: RawMission[] = [
         ],
       },
       {
-        question: "מי גונב אוכל מהצלחת?",
+        question: "מי תמיד מנצח במשחק השאלות?",
         aiTaunt: "בטח אף אחד, אנשים מנומסים.",
         choices: [
-          { id: "a", label: "עזיזי", emoji: "😬", correct: true },
-          { id: "b", label: "אף אחד", emoji: "😇" },
-          { id: "c", label: "השכן", emoji: "🚪" },
+          { id: "a", label: "אף אחד, זה כמו מטקות, מי שיודע יודע", emoji: "😇", correct: true },
+          { id: "b", label: "צ'ונו עזיזי המלך הבלתי מעורער", emoji: "👦" },
+          { id: "c", label: "צ'אפו ליובין הניסיכה שילי", emoji: "👧" },
         ],
       },
     ],
